@@ -10,24 +10,18 @@ from spider36kr.items import Spider36KrItem
 class A36krSpider(scrapy.Spider):
     name = '36kr'
     allowed_domains = ['36kr.com']
-    # page页码，keyword搜索关键词， time_stamp时间戳
     search_url = 'https://36kr.com/api//search/entity-search?page={page}&per_page=40&keyword={keyword}&entity_type=post&sort=date&_={time_stamp}'
-    # .format(page, keyword, time_stamp)
     detail_url = 'https://36kr.com/p/{article_id}.html'
-    # urlencode 转的是字典
     keyword = urlencode({'keyword': '区块链'}).split('=')[-1]
-    # keyword = '%E5%8C%BA%E5%9D%97%E9%93%BE'
     page = 30
 
     def start_requests(self):
-        # self.logger.debug(self.keyword)
         time_stamp = str(int(time.time()*1000))
         yield scrapy.Request(self.search_url.format(page=self.page, keyword=self.keyword, time_stamp=time_stamp),
                              callback=self.parse_url)
 
     def parse_url(self, response):
         result = json.loads(response.text)
-        # 最后一页的json数据没有items
         if result.get('data').get('items'):
             self.page += 1
             time_stamp = str(int(time.time() * 1000))
@@ -41,13 +35,10 @@ class A36krSpider(scrapy.Spider):
                                      dont_filter=True)
 
     def parse_detail(self, response):
-        self.logger.debug(response.headers)
         try:
             result = re.findall('<script>var props={"detailArticle\|post":(.*?),\s*"hotPostsOf30\|hotPost"\:\s*\[{',
                                 response.text, re.S)[0]
-
         except IndexError:
-            # self.logger.error(response.text)
             result = re.findall('\s*<script>var props={"detailArticle\|post":(.*?)\s*},\s*locationnal\s*=\s*',
                                 response.text, re.S)[0]
         else:
