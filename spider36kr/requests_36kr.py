@@ -14,18 +14,6 @@ import time
 # }
 
 # response = requests.get('https://36kr.com/p/5134929.html', headers=headers)
-
-# article_id = scrapy.Field()
-# article_url = scrapy.Field()
-# article_title = scrapy.Field()
-# article_summary = scrapy.Field()
-# article_content = scrapy.Field()
-# writer_name = scrapy.Field()
-# column_name = scrapy.Field()
-# writer_role = scrapy.Field()
-# published_time = scrapy.Field()
-# crawled_time = scrapy.Field()
-
 # with open('detail_36kr.html', 'r') as f:
 with open('error_36kr.html', 'r') as f:
 
@@ -51,7 +39,6 @@ with open('error_36kr.html', 'r') as f:
     }
     # 'column': 'column',
     # 'writer': 'user',
-
     for field, attr in field_map.items():
         items[field] = data.get(attr)
 
@@ -73,7 +60,6 @@ with open('error_36kr.html', 'r') as f:
     # 不能用
     # print(tag.decode('unicode_escape'))
     # print(tags)
-
 
     # print(items.get('article_content'))
     article_content = re.sub(r'<a.*?>|</a>|<img.*?><p class="img-desc">.*?</p>|<p>|</p>|<br.*?>|\n|\t|\s', '',
